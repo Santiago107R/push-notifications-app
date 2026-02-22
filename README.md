@@ -6,6 +6,11 @@
    npm install
    ```
 
+<!-- 2. Instalar EAS CLI
+```
+   npm install -g eas-cli
+``` -->
+
 2. Start the app
 
    ```bash

@@ -36,7 +36,7 @@ export default function PushApp() {
                         paddingVertical: 20,
                     }}>
                         <ThemedText
-                            style={{textAlign: 'center', fontSize: 16, color: 'grey'}}
+                            style={{ textAlign: 'center', fontSize: 16, color: 'grey' }}
                         >No hay notificaciones</ThemedText>
                     </View>
                 )}
