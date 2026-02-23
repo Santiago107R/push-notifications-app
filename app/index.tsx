@@ -40,7 +40,7 @@ export default function PushApp() {
                         >No hay notificaciones</ThemedText>
                     </View>
                 )}
-            />
+            /> 
 
             {/* <Button
         title="Press to Send Notification"

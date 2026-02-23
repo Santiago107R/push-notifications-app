@@ -6,12 +6,12 @@
    npm install
    ```
 
-<!-- 2. Instalar EAS CLI
+2. Instalar EAS CLI
 ```
    npm install -g eas-cli
-``` -->
+```
 
-2. Start the app
+3. Start the app
 
    ```bash
    npx expo start

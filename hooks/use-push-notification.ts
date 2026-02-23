@@ -3,6 +3,7 @@ import { Platform } from 'react-native';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
+import { router, useRootNavigationState } from 'expo-router';
 
 // Configuraciones 
 Notifications.setNotificationHandler({
@@ -81,7 +82,7 @@ async function registerForPushNotificationsAsync() {
                     projectId,
                 })
             ).data;
-            console.log({[Platform.OS]: pushTokenString});
+            console.log({ [Platform.OS]: pushTokenString });
             return pushTokenString;
         } catch (e: unknown) {
             handleRegistrationError(`${e}`);
@@ -93,6 +94,9 @@ async function registerForPushNotificationsAsync() {
 
 
 export const usePushNotifications = () => {
+
+    const [pendingChatId, setPendingChatId] = useState<string | null>('')
+    const rootNavigationState = useRootNavigationState()
 
     const [expoPushToken, setExpoPushToken] = useState('');
     const [notification, setNotification] = useState<Notifications.Notification[]>([]);
@@ -106,21 +110,50 @@ export const usePushNotifications = () => {
 
     useEffect(() => {
         const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+
             setNotification((prev) => [notification, ...prev]);
         });
 
         const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
             console.log('addNotificationResponseReceivedListener');
             console.log(response);
+
+            const chatId = response.notification.request.content.data?.chatId
+
+            if (typeof chatId === 'string' && chatId.length > 0) {
+                setPendingChatId(chatId)
+            }
+
         });
 
         //TODO: implementar funcion cuando la app este terminada
+        const handleInitialNotificationResponse = () => {
+            const response = Notifications.getLastNotificationResponse()
+
+            const chatId = response?.notification?.request?.content?.data?.chatId
+            if (typeof chatId === 'string' && chatId.length > 0) {
+                setPendingChatId(chatId)
+            }
+
+        }
+
+        handleInitialNotificationResponse()
 
         return () => {
             notificationListener.remove();
             responseListener.remove();
         };
     }, [])
+
+    useEffect(() => {
+        if (!rootNavigationState.key) return
+        if (!pendingChatId) return
+
+        router.push(`/chat/${pendingChatId}`)
+        setPendingChatId(null)
+
+
+    }, [pendingChatId, rootNavigationState?.key])
 
     return {
         // Props 
